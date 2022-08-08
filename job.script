@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=16384
 #SBATCH --cpus-per-task=1
-#SBATCH --output=/scratch/FYP-code/data/output_files/file-%j.ext1 
+#SBATCH --output=/home/nhobman/scratch/FYP-code/data/output_files/file-%j.ext1 
 #SBATCH --error=/home/nhobman/scratch/FYP-code/data/output_files/file-%j.ext2 
 
-python3 /scratch/FYP-code/pynboids1.1.py
+python3 home/nhobman/scratch/FYP-code/pynboids1.1.py
