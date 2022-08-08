@@ -70,7 +70,8 @@ class Boid(pg.sprite.Sprite):
         neiboids = sorted(near_boids, key=lambda i: pg.Vector2(i.rect.center).distance_to(selfCenter))
         del neiboids[7:]  # keep 7 closest, dump the rest
         # when boid has neighborS (walrus sets ncount)
-        if (ncount := len(neiboids)) > 1:
+        ncount = len(neiboids) #changed walrus set to equality for compatability with python 6 on monarch
+        if ( len(neiboids)) > 1:
             nearestBoid = pg.Vector2(neiboids[0].rect.center)
             for nBoid in neiboids:  # adds up neighbor vectors & angles for averaging
                 xvt += nBoid.rect.centerx
