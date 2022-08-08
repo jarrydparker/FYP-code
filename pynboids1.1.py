@@ -18,7 +18,7 @@ Copyright (c) 2021  Nikolaus Stromberg  nikorasu85@gmail.com
 '''
 FLLSCRN = False         # True for Fullscreen, or False for Window
 BOIDZ = 100             # How many boids to spawn, too many may slow fps
-WRAP = False            # False avoids edges, True wraps to other side
+WRAP = True            # False avoids edges, True wraps to other side
 FISH = False            # True to turn boids into fish
 SPEED = 150             # Movement speed
 WIDTH = 1200            # Window Width (1200)
@@ -201,7 +201,8 @@ def main():
         blah = iter(nBoids) 
         print(next(blah))
 
-        pg.display.update()
+        #pg.display.update()
+        #commented out pg.display.update for use of the supercomputer. (simulation will not be interactive) 
 
 if __name__ == '__main__':
     main()  # by Nik
