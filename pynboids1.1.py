@@ -152,23 +152,26 @@ class BoidGrid():  # tracks boids in spatial partition grid
     
 start_time = time.time()
 def main():
-    pg.init()  # prepare window
-    pg.display.set_caption("PyNBoids")
-    try: pg.display.set_icon(pg.image.load("nboids.png"))
-    except: print("Note: nboids.png icon not found, skipping..")
+    #pg.init()  # prepare window comment out to have no window
+    #pg.display.set_caption("PyNBoids") comment out to have no display
+    #try: pg.display.set_icon(pg.image.load("nboids.png"))
+    #except: print("Note: nboids.png icon not found, skipping..")
     # setup fullscreen or window mode
-    if FLLSCRN:
-        currentRez = (pg.display.Info().current_w, pg.display.Info().current_h)
-        screen = pg.display.set_mode(currentRez, pg.SCALED | pg.NOFRAME | pg.FULLSCREEN, vsync=1)
-        pg.mouse.set_visible(False)
-    else: screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE | pg.SCALED, vsync=1)
+    #if FLLSCRN:
+      #  currentRez = (pg.display.Info().current_w, pg.display.Info().current_h)
+      #  screen = pg.display.set_mode(currentRez, pg.SCALED | pg.NOFRAME | pg.FULLSCREEN, vsync=1)
+      #  pg.mouse.set_visible(False)
+   # else: screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE | pg.SCALED, vsync=1)
+
+    screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE | pg.SCALED, vsync=1)
 
     boidTracker = BoidGrid()
+    print(boidTracker.dict)
     nBoids = pg.sprite.Group()
     # spawns desired # of boidz
     for n in range(BOIDZ) : nBoids.add(Boid(boidTracker, screen, FISH))
 
-    if SHOWFPS : font = pg.font.Font(None, 30)
+    #if SHOWFPS : font = pg.font.Font(None, 30)
     clock = pg.time.Clock()
     
     
@@ -190,12 +193,12 @@ def main():
             #pg.display.quit()
             return
         
-        screen.fill(BGCOLOR)
+        #screen.fill(BGCOLOR)
         # update boid logic, then draw them
         nBoids.update(dt, SPEED, WRAP)
-        nBoids.draw(screen)
+       # nBoids.draw(screen)
         # if true, displays the fps in the upper left corner, for debugging
-        if SHOWFPS : screen.blit(font.render(str(int(clock.get_fps())), True, [0,200,0]), (8, 8))
+       # if SHOWFPS : screen.blit(font.render(str(int(clock.get_fps())), True, [0,200,0]), (8, 8))
         
         boidPos = []
         blah = iter(nBoids) 
@@ -207,3 +210,5 @@ def main():
 if __name__ == '__main__':
     main()  # by Nik
     pg.quit()
+    print("hello world")
+  
