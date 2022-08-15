@@ -104,7 +104,7 @@ class Boid():
 width = 1000
 height = 1000
 
-flock = [Boid(*np.random.rand(2)*1000, width, height) for _ in range(10)]
+flock = [Boid(np.random.rand(1)*1000, np.random.rand(1)*1000, width, height) for _ in range(10)]
 
 def draw():
     global flock
