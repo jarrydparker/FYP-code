@@ -109,12 +109,15 @@ flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _
 def draw():
     global flock
 
+    i = 0
     for boid in flock:
         boid.edges()
         boid.apply_behaviour(flock)
         boid.update()
-        print(boid.position)
+        if i == 0:
+            print(boid.position)
         #boid.show()
+        i = i+1; 
 
 def run(time = 200): 
 
