@@ -4,7 +4,7 @@ class Boid():
     def __init__(self, x, y, width, height):
         self.x = x
         self.y = y
-        self.position = np.array([self.x,self.y])
+        self.position = np.array([self.x , self.y])
         vec = (np.random.rand(2) - 0.5)*10
         self.velocity = vec
 
@@ -104,7 +104,7 @@ class Boid():
 width = 1000
 height = 1000
 
-flock = [Boid(np.random.rand(1)*1000, np.random.rand(1)*1000, width, height) for _ in range(10)]
+flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(10)]
 
 def draw():
     global flock
