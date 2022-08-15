@@ -7,4 +7,4 @@
 #SBATCH --output=/home/nhobman/scratch/FYP-code/data/output_files/file-%j.ext1 
 #SBATCH --error=/home/nhobman/scratch/FYP-code/data/output_files/file-%j.ext2 
 
-python3 /home/nhobman/scratch/FYP-code/main.py
+python /home/nhobman/scratch/FYP-code/main.py
