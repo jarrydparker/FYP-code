@@ -104,7 +104,9 @@ class Boid():
 
 width = 1000
 height = 1000
-boid_n = 30 #number of boids
+boid_n = 10 #number of boids
+snapshot = 250
+time_steps = 2000
 
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
 
@@ -123,11 +125,12 @@ def update():
 
 
 
-def run(time = 2000): 
+def run(time = time_steps): 
     #function to run simulation code
     #time = how many timesteps do we want to simulate for
     correlations = []
     C_avg = [] #average correlation for each time step (see when this becomes steady state) 
+
     for t in range(time): 
         vel = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
         norm_v = []
@@ -149,42 +152,46 @@ def run(time = 2000):
         correlations.append(C_matrix)
         C_avg.append(C_int)
 
-
+    #-------------------Post processing code-----------------#
     print("done")
     #plotting average correlations over timestep - check we are in steady state.
+    #Obtain the experimental value of C_int
+    C_exp = np.average(C_avg[(t-snapshot):(t-1)])
+    #printing experimental value of average correlation
+    print("C_exp = ", C_exp)
+    #check if simulation was in steady state
     plt.plot(C_avg)
     plt.xlabel("time")
     plt.ylabel("C_int")
+    plt.title('n_boids = %d ' %boid_n)
     plt.show()
 
+    #TO DO: 
+    #(1) Plot C_int as a fucntion of J
+    #(2) find on the plot what J matches C_int for C exp
+    #(3) plot log-liklihood to find n_c, choose n_c such that entropy is maximised 
+    #(4) do for many snapshots - find the mean and std for J and nc
+    #(5) Calculate correlations as a function of distance by fixing J and n_c
+    #(6) Confirm the max entropy model agrees with simulation by plotting
+    # the correlation function from the max entropy model vs the one 
+    # obtained from simulation
+    #(7) extend project ...
 
+
+
+#run the simulaiton and post processing code
 run()
 
-# TO DO -------------------------------------------------
-#(1) each bird is assigned a state label v_i - DONE
 
-#(2) also define a normalised velocity 
 
-#(3) Assume birds are in a statistically stationary state
-#(check). - DONE? look at plots to check we are in stationary state
-#trial and error, see aprox how long it takes to get stationary state. run code based on that
-#after analysis look at plot to confirm system was in stationaty state
 
-#(4) Calculate C_int (eq. 14) for a single flock at a 
-#given instant of time
 
-#(5) Compare C_int to experimental value C_exp to fix the 
-#experimental value of J for the snapshot
 
-#(6) Plot the log liklihood as a function of n_c. choose n_c
-#such that the log liklihood is maximised 
 
-#(7) repeat the procedure for multiple snapshots in the flock
-#find the mean and standard deviation of the interaction parameters
 
-#(8) Calculate correlations as a function of distance by fixing J and n_c
 
-#(9) Confirm the max entropy model agrees with simulation by plotting
-#the correlation function from the max entropy model vs the one 
-#obtained from simulation
+
+
+
+
 
