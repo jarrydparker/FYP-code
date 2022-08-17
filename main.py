@@ -104,8 +104,9 @@ class Boid():
 
 width = 1000
 height = 1000
+boid_n = 30 #number of boids
 
-flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(10)]
+flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
 
 def draw():
     global flock
@@ -116,25 +117,47 @@ def draw():
         boid.apply_behaviour(flock)
         boid.update()
         vel.append(boid.velocity)
-    #average velocity for timestep
-    avg_vel = np.average(np.linalg.norm(vel))
+
+    #Return the velocities for each time step   
     
-    return avg_vel
+    return vel
+
+
 
 def run(time = 2000): 
-    avg_velocity = []
+    #function to run simulation code
+    #time = how many timesteps do we want to simulate for
+    correlations = []
+    C_avg = [] #average correlation for each time step (see when this becomes steady state) 
     for t in range(time): 
-        avg_vel = draw()
-        avg_velocity.append(avg_vel)
+        vel = draw() #applies flocking behaviour and updates velocites and positions for "time" steps. 
+        norm_v = []
+        for v in vel:
+            norm_v.append(v/np.linalg.norm(v)) #getting normalised velocites
+
+        #calculating correlation matrix for each time step
+        C_matrix = np.zeros((boid_n, boid_n))
+        for i in range(boid_n):
+            for j in range(boid_n):
+                a = norm_v[i]
+                b = norm_v[j]
+                C_matrix[i,j] = np.inner(a, b)
+                #how alligned are the boids?
+        
+        #calculating C_int 
+        C_int = np.average(C_matrix)
+        #saving correlation matric and C_int for each time step. 
+        correlations.append(C_matrix)
+        C_avg.append(C_int)
 
 
     print("done")
-    print(avg_velocity)
-    #printing avg velocities
-    plt.plot(avg_velocity)
+    #plotting average correlations over timestep - check if we are in steady state.
+    plt.plot()
     plt.xlabel("time")
-    plt.ylabel("average velocities")
+    plt.ylabel("C_int")
     plt.show()
+
 
 run()
 
