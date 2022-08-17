@@ -108,7 +108,7 @@ boid_n = 30 #number of boids
 
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
 
-def draw():
+def update():
     global flock
 
     vel = []
@@ -119,7 +119,6 @@ def draw():
         vel.append(boid.velocity)
 
     #Return the velocities for each time step   
-    
     return vel
 
 
@@ -130,7 +129,7 @@ def run(time = 2000):
     correlations = []
     C_avg = [] #average correlation for each time step (see when this becomes steady state) 
     for t in range(time): 
-        vel = draw() #applies flocking behaviour and updates velocites and positions for "time" steps. 
+        vel = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
         norm_v = []
         for v in vel:
             norm_v.append(v/np.linalg.norm(v)) #getting normalised velocites
@@ -152,8 +151,8 @@ def run(time = 2000):
 
 
     print("done")
-    #plotting average correlations over timestep - check if we are in steady state.
-    plt.plot()
+    #plotting average correlations over timestep - check we are in steady state.
+    plt.plot(C_avg)
     plt.xlabel("time")
     plt.ylabel("C_int")
     plt.show()
