@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Boid():
     def __init__(self, x, y, width, height):
@@ -109,29 +110,59 @@ flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _
 def draw():
     global flock
 
-    i = 0
+    vel = []
     for boid in flock:
         boid.edges()
         boid.apply_behaviour(flock)
         boid.update()
-        if i == 0:
-            print(boid.position)
-        #boid.show()
-        i = i+1; 
+        vel.append(boid.velocity)
+    #average velocity for timestep
+    avg_vel = np.average(np.linalg.norm(vel))
+    
+    return avg_vel
 
-def run(time = 200): 
-
+def run(time = 2000): 
+    avg_velocity = []
     for t in range(time): 
-        draw()
+        avg_vel = draw()
+        avg_velocity.append(avg_vel)
+
 
     print("done")
+    print(avg_velocity)
+    #printing avg velocities
+    plt.plot(avg_velocity)
+    plt.xlabel("time")
+    plt.ylabel("average velocities")
+    plt.show()
 
 run()
 
+# TO DO -------------------------------------------------
+#(1) each bird is assigned a state label v_i - DONE
 
+#(2) also define a normalised velocity 
 
+#(3) Assume birds are in a statistically stationary state
+#(check). - DONE? look at plots to check we are in stationary state
+#trial and error, see aprox how long it takes to get stationary state. run code based on that
+#after analysis look at plot to confirm system was in stationaty state
 
+#(4) Calculate C_int (eq. 14) for a single flock at a 
+#given instant of time
 
+#(5) Compare C_int to experimental value C_exp to fix the 
+#experimental value of J for the snapshot
 
+#(6) Plot the log liklihood as a function of n_c. choose n_c
+#such that the log liklihood is maximised 
 
+#(7) repeat the procedure for multiple snapshots in the flock
+#find the mean and standard deviation of the interaction parameters
+
+#(8) Calculate correlations as a function of distance by fixing J and n_c
+
+#(9) Confirm the max entropy model agrees with simulation by plotting
+#the correlation function from the max entropy model vs the one 
+#obtained from simulation
 
