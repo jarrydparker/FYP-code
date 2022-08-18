@@ -138,6 +138,8 @@ def run(time = time_steps):
             norm_v.append(v/np.linalg.norm(v)) #getting normalised velocites
 
         #calculating correlation matrix for each time step
+        #TO DO: make this part of the code more efficient by using math operations
+        #insead of for loops. 
         C_matrix = np.zeros((boid_n, boid_n))
         for i in range(boid_n):
             for j in range(boid_n):
@@ -181,17 +183,3 @@ def run(time = time_steps):
 
 #run the simulaiton and post processing code
 run()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
