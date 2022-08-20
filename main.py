@@ -154,7 +154,7 @@ def run(time = time_steps):
         correlations.append(C_matrix)
         C_avg.append(C_int)
 
-    #-------------------Post processing code-----------------#
+    #-------------------Finding C_int in steady state-----------------#
     print("done")
     #plotting average correlations over timestep - check we are in steady state.
     #Obtain the experimental value of C_int
@@ -168,18 +168,26 @@ def run(time = time_steps):
     plt.title('n_boids = %d ' %boid_n)
     plt.show()
 
-    #TO DO: 
-    #(1) Plot C_int as a fucntion of J
-    #(2) find on the plot what J matches C_int for C exp
-    #(3) plot log-liklihood to find n_c, choose n_c such that entropy is maximised 
-    #(4) do for many snapshots - find the mean and std for J and nc
-    #(5) Calculate correlations as a function of distance by fixing J and n_c
-    #(6) Confirm the max entropy model agrees with simulation by plotting
-    # the correlation function from the max entropy model vs the one 
-    # obtained from simulation
-    #(7) extend project ...
+#----------JARRYD ANIMATION CODE--------------
 
 
+
+#----------------------------------------------
+
+#--------------JARRYD ANALYSIS CODDE-----------
+#Find J and nc 
+
+#-----------------------------------------------
+
+#----------------NIKKI ANALYSIS CODE-----------
+#Find relationship between J and nc 
+#Confirm the max entropy model agrees with simulation by plotting
+#the correlation function from the max entropy model vs the one from simulation
+#(plotted correlation as a function of different parameters - refer to paper)
+
+
+
+#-----------------------------------------------
 
 #run the simulaiton and post processing code
 run()
