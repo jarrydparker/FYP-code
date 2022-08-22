@@ -169,7 +169,7 @@ def run(time = time_steps):
     plt.ylabel("C_exp")
     plt.title('n_boids = %d ' %boid_n)
    # plt.show()
-   plt.savefig('SS_check_b%d_s%d ' %boid_n %snapshot)
+    plt.savefig('SS_check_b%d_s%d ' %boid_n %snapshot)
 
 #----------JARRYD ANIMATION CODE--------------
 
