@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from time import time 
 
+start = time()
 class Boid():
     def __init__(self, x, y, width, height):
         self.x = x
@@ -102,9 +104,9 @@ class Boid():
 
         return steering
 
-width = 1000
-height = 1000
-boid_n = 10 #number of boids
+width = 1500
+height = 1500
+boid_n = 500 #number of boids
 snapshot = 250
 time_steps = 2000
 
@@ -164,9 +166,10 @@ def run(time = time_steps):
     #check if simulation was in steady state
     plt.plot(C_avg)
     plt.xlabel("time")
-    plt.ylabel("C_int")
+    plt.ylabel("C_exp")
     plt.title('n_boids = %d ' %boid_n)
-    plt.show()
+   # plt.show()
+   plt.savefig('SS_check_b%d_s%d ' %boid_n %snapshot)
 
 #----------JARRYD ANIMATION CODE--------------
 
@@ -191,3 +194,4 @@ def run(time = time_steps):
 
 #run the simulaiton and post processing code
 run()
+print('Time taken to rin: {time() - start} s')
