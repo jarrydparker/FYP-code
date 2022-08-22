@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from time import time 
 
 start = time()
@@ -164,12 +163,6 @@ def run(time = time_steps):
     #printing experimental value of average correlation
     print("C_exp = ", C_exp)
     #check if simulation was in steady state
-    plt.plot(C_avg)
-    plt.xlabel("time")
-    plt.ylabel("C_exp")
-    plt.title('n_boids = %d ' %boid_n)
-   # plt.show()
-    plt.savefig('SS_check_b%d_s%d ' %boid_n %snapshot)
 
 #----------JARRYD ANIMATION CODE--------------
 
@@ -194,4 +187,4 @@ def run(time = time_steps):
 
 #run the simulaiton and post processing code
 run()
-print('Time taken to rin: {time() - start} s')
+print('Time taken to run: {time() - start} s')
