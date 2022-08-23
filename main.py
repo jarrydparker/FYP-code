@@ -1,6 +1,9 @@
 import numpy as np
 from time import time 
 
+#Bialek paper used 1246 boids
+#try nc  = 20 birds
+
 start = time()
 class Boid():
     def __init__(self, x, y, width, height):
@@ -103,66 +106,101 @@ class Boid():
 
         return steering
 
+#////////////////////CONTROL PARAMETERS///////////////////////////////////
 width = 1500
 height = 1500
 boid_n = 500 #number of boids
-snapshot = 250
+snapshot = 250 #how many snapshots do we use to calculate the interaction parameters
 time_steps = 2000
+n_size = 20 #neigbourhood size
 
+#////////////////////INSTANTIATE CLASSES////////////////////////////////////////
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
+
+#////////////////////GENERAL FUNCTIONS//////////////////////////////////////////
+def distance(p1, p2):
+   return (p1[0]-p2[0])**2 + (p1[1]-p2[1])**2
+
+def find_nearest(pos, pos_list , n): 
+    #function that returns the nearest n closest positions to a given vector. 
+    idx_list = []
+    dist = []
+    for p in pos_list:
+        dist.append(distance(pos, p))
+    
+    dist = np.array(dist)
+    for i in range(n+1):
+        idx = dist.argmin()
+        dist[idx]= 99999999
+        idx_list.append(idx)
+        
+    del idx_list[0]
+    return idx_list
 
 def update():
     global flock
-
-    vel = []
+    norm_vel = []
+    pos = []
     for boid in flock:
         boid.edges()
         boid.apply_behaviour(flock)
         boid.update()
-        vel.append(boid.velocity)
+        norm_vel.append(boid.velocity/np.linalg.norm(boid.velocity))
+        pos.append(boid.position)
 
     #Return the velocities for each time step   
-    return vel
+    return norm_vel, pos
 
 
+#////////////////////RUN SIMULATION////////////////////////
 
-def run(time = time_steps): 
+def run(time = time_steps, n_c = n_size): 
     #function to run simulation code
     #time = how many timesteps do we want to simulate for
-    correlations = []
-    C_avg = [] #average correlation for each time step (see when this becomes steady state) 
+    C_int = []
 
     for t in range(time): 
-        vel = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
-        norm_v = []
-        for v in vel:
-            norm_v.append(v/np.linalg.norm(v)) #getting normalised velocites
+        if n_c > boid_n:
+            print("ERROR: nc >n_boids")
+            break 
+        #updates velocity for every time step then calculates int
+        norm_v, pos = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
 
-        #calculating correlation matrix for each time step
-        #TO DO: make this part of the code more efficient by using math operations
-        #insead of for loops. 
-        C_matrix = np.zeros((boid_n, boid_n))
+        #calculating C_int by considering only local neigbourhood. 
+        list_of_sums = []
+
         for i in range(boid_n):
-            for j in range(boid_n):
+            #find n_c closest boids
+            idx_list = find_nearest(pos[i],pos,n_c)
+            list_of_products = []
+            for j in idx_list:
                 a = norm_v[i]
                 b = norm_v[j]
-                C_matrix[i,j] = np.inner(a, b)
-                #how alligned are the boids?
-        
-        #calculating C_int 
-        C_int = np.average(C_matrix)
-        #saving correlation matric and C_int for each time step. 
-        correlations.append(C_matrix)
-        C_avg.append(C_int)
+                product = np.inner(a, b)
+                list_of_products.append(product)
+            product_sum = np.sum(list_of_products)/n_c
+            list_of_sums.append(product_sum)
+            
+        print('time = %d' %t)
+        C = np.sum(list_of_sums)/boid_n
+        C_int.append(C)
 
     #-------------------Finding C_int in steady state-----------------#
-    print("done")
     #plotting average correlations over timestep - check we are in steady state.
     #Obtain the experimental value of C_int
-    C_exp = np.average(C_avg[(t-snapshot):(t-1)])
     #printing experimental value of average correlation
-    print("C_exp = ", C_exp)
     #check if simulation was in steady state
+    C_avg = np.average(C_int[(t-snapshot):(t-1)])
+    print('C_avg = %d ' %C_avg)
+    print('n_boids = %d' %boid_n)
+    print('nc  = %d' %n_c )
+    print('time_steps = %d' %time_steps)
+    print('snapshot = %d' %snapshot)
+    print('')
+    print('')
+    print('C_int Results:')
+    print(C_int)
+
 
 #----------JARRYD ANIMATION CODE--------------
 
@@ -181,10 +219,15 @@ def run(time = time_steps):
 #the correlation function from the max entropy model vs the one from simulation
 #(plotted correlation as a function of different parameters - refer to paper)
 
+#correlation as a function of ditance 
+#perpendicular component
+#longitudinal component
+#average is performed over all pairs seperated by distance r
+#corealation as a function of distance
 
 
 #-----------------------------------------------
-
 #run the simulaiton and post processing code
 run()
-print('Time taken to run: {time() - start} s')
+total_time = time()-start
+print('Time taken to run: %d s' %total_time)

@@ -1,10 +1,8 @@
-import matplotlib.pyplot as plt
+import numpy 
 
-plt.plot(C_avg)
-plt.xlabel("time")
-plt.ylabel("C_exp")
-plt.title('n_boids = %d ' %boid_n)
-# plt.show()
-plt.savefig('SS_check_b%d_s%d ' %boid_n %snapshot)
+x = numpy.array([[1,1], [2,2], [3,3], [4,4]])
+y = numpy.array([[4,4], [3,3], [2,2], [1,1]])
 
+C = numpy.corrcoef(x)
+print(C)
 
