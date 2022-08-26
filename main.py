@@ -168,7 +168,6 @@ def run(time = time_steps, n_c = n_size):
 
         #calculating C_int by considering only local neigbourhood. 
         list_of_sums = []
-
         for i in range(boid_n):
             #find n_c closest boids
             idx_list = find_nearest(pos[i],pos,n_c)
