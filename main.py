@@ -203,7 +203,7 @@ def run(time = time_steps, n_c = n_size):
 
 
 #----------JARRYD ANIMATION CODE--------------
-
+#make this section easy to comment out. 
 
 
 #----------------------------------------------
@@ -217,13 +217,15 @@ def run(time = time_steps, n_c = n_size):
 #Find relationship between J and nc 
 #Confirm the max entropy model agrees with simulation by plotting
 #the correlation function from the max entropy model vs the one from simulation
-#(plotted correlation as a function of different parameters - refer to paper)
 
 #correlation as a function of ditance 
 #perpendicular component
 #longitudinal component
 #average is performed over all pairs seperated by distance r
 #corealation as a function of distance
+
+
+
 
 
 #-----------------------------------------------
