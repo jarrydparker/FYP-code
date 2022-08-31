@@ -3,6 +3,7 @@ from time import time
 
 #Bialek paper used 1246 boids
 #try nc  = 20 birds
+#bialek et all calculated of 25 snapshots
 
 start = time()
 class Boid():
