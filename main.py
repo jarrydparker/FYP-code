@@ -203,20 +203,15 @@ print('time_steps = %d' %time_steps)
 print('snapshot = %d' %snapshot)
 all_vel, all_pos, C_int, C_avg, C_std = run()
 print('')
-print("C_int = ")
-C_int
+print("C_int = %f" %C_int)
 print('')
-print("C_avg = ")
-C_avg
+print("C_avg = %f " %C_avg)
 print('')
-print("C_std = ")
-C_std
+print("C_std = %f " %C_std)
 print('')
-print("Posistion Data = ")
-all_pos
+print("Posistion Data = %f " %all_pos)
 print('')
-print("velocity data = ")
-all_vel
+print("velocity data = %f ", all_vel)
 
 
 total_time = time()-start
