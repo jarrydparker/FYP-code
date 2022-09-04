@@ -108,13 +108,12 @@ class Boid():
         return steering
 
 #////////////////////CONTROL PARAMETERS///////////////////////////////////
-width = 3000
-height = 3000
-boid_n = 1000 #number of boids
-snapshot = 100 #how many snapshots do we use to calculate the interaction parameters
+width = 2000
+height = 2000
+boid_n = 526 #number of boids
+snapshot = 50 #how many snapshots do we use to calculate the interaction parameters
 time_steps = 1000
-n_size = 20 #neigbourhood size
-
+n_size =  list(range(1,5))
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
 
@@ -161,6 +160,24 @@ def update():
     #Return the velocities for each time step  
     return norm_vel, pos, posx, posy, velx, vely
 
+def calc_c(norm_v, pos, n): 
+    #pos is list of positions
+    list_of_sums = []
+    for i in range(boid_n):
+    #find n_c closest boids
+        idx_list = find_nearest(pos[i],pos,n)
+        list_of_products = []
+        for j in idx_list:
+            a = norm_v[i]
+            b = norm_v[j]
+            product = np.inner(a, b)
+            list_of_products.append(product)
+        product_sum = np.sum(list_of_products)/n
+        list_of_sums.append(product_sum)
+    C = np.sum(list_of_sums)/boid_n
+    return C
+
+
 
 #////////////////////RUN SIMULATION////////////////////////
 
@@ -172,11 +189,10 @@ def run(time = time_steps, n_c = n_size):
     allposy = []
     allvelx = []
     allvely = []
-
+    C_matrix = np.zeros((n_size[-1], snapshot))
     for t in range(time): 
-        if n_c > boid_n:
-            print("ERROR: nc >n_boids")
-            break 
+        print('time = %d' %t)
+
         #updates velocity for every time step then calculates int
         norm_v, pos, posx, posy, velx, vely = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
 
@@ -185,37 +201,31 @@ def run(time = time_steps, n_c = n_size):
             allposy.append(posy)
             allvelx.append(velx)
             allvely.append(vely)
+            #Calculate corelations for a range of neigbourhood sizes. 
+
+            for n in n_size:
+                c = calc_c(norm_v, pos, n)
+                C_matrix[n-1, time_steps - t] =c
+
         #calculating C_int by considering only local neigbourhood. 
-        list_of_sums = []
-        for i in range(boid_n):
-            #find n_c closest boids
-            idx_list = find_nearest(pos[i],pos,n_c)
-            list_of_products = []
-            for j in idx_list:
-                a = norm_v[i]
-                b = norm_v[j]
-                product = np.inner(a, b)
-                list_of_products.append(product)
-            product_sum = np.sum(list_of_products)/n_c
-            list_of_sums.append(product_sum)
-            
-        print('time = %d' %t)
-        C = np.sum(list_of_sums)/boid_n
+        C = calc_c(norm_v, pos, 20) #obtaining C int for n = 20 to see if we are in steady state
         C_int.append(C)
     C_avg = np.average(C_int[time_steps - snapshot: time_steps-1])
     C_std = np.std(C_int)
+    C_avg_n = np.average(C_matrix, axis=1)
+    C_std_n = np.std(C_matrix, axis = 1)
 
-    return allposx, allposy, allvelx, allvely , C_int, C_avg, C_std
+    return allposx, allposy, allvelx, allvely , C_int, C_avg, C_std, C_avg_n, C_std_n, C_matrix
 
 
 #-----------------------------------------------
 #run the simulaiton and post processing code
 print('Simulation Info:')
 print('n_boids= %d' %boid_n)
-print('nc = %d' %n_size)
+#print('nc = %d' %n_size)
 print('time_steps = %d' %time_steps)
 print('snapshot = %d' %snapshot)
-posx, posy, velx, vely, C_int, C_avg, C_std = run()
+posx, posy, velx, vely, C_int, C_avg, C_std, C_avg_n, C_std_n, C_matrix = run()
 print('')
 print("C_int = ")
 for c in C_int:
@@ -237,6 +247,17 @@ print(velx)
 print('')
 print("velocity data y =  ")
 print(vely)
+print('')
+print("C_avg_n = ")
+print(C_avg_n)
+print('')
+print('C_std_n = ')
+print(C_std_n)
+print('')
+print('C_Matrix = ')
+print(C_matrix)
+print('')
+
 
 total_time = time()-start
 print('Time taken to run: %d s' %total_time)
