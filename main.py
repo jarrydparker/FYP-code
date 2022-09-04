@@ -1,4 +1,3 @@
-from ctypes import c_int
 import numpy as np
 from time import time 
 
@@ -111,10 +110,10 @@ class Boid():
 #////////////////////CONTROL PARAMETERS///////////////////////////////////
 width = 2500
 height = 2500
-boid_n = 1000 #number of boids
-snapshot = 200 #how many snapshots do we use to calculate the interaction parameters
-time_steps = 1000
-n_size = 20 #neigbourhood size
+boid_n = 10 #number of boids
+snapshot = 10 #how many snapshots do we use to calculate the interaction parameters
+time_steps = 20
+n_size = 5 #neigbourhood size
 
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
@@ -160,6 +159,8 @@ def run(time = time_steps, n_c = n_size):
     #function to run simulation code
     #time = how many timesteps do we want to simulate for
     C_int = []
+    all_vel = []
+    all_pos = []
 
     for t in range(time): 
         if n_c > boid_n:
@@ -167,7 +168,9 @@ def run(time = time_steps, n_c = n_size):
             break 
         #updates velocity for every time step then calculates int
         norm_v, pos = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
-
+        if t > (time_steps - snapshot): #obtain position and velocity data for final snapshots
+            all_vel.append(norm_v)
+            all_pos.append(pos)
         #calculating C_int by considering only local neigbourhood. 
         list_of_sums = []
         for i in range(boid_n):
@@ -188,6 +191,8 @@ def run(time = time_steps, n_c = n_size):
     C_avg = np.average(C_int[time_steps - snapshot: time_steps-1])
     C_std = np.std(C_int)
 
+    return all_vel, all_pos, C_int, C_avg, C_std
+
 
 #-----------------------------------------------
 #run the simulaiton and post processing code
@@ -196,23 +201,22 @@ print('n_boids= %d' %boid_n)
 print('nc = %d' %n_size)
 print('time_steps = %d' %time_steps)
 print('snapshot = %d' %snapshot)
-C_int = []
-C_avg = 0
-C_std = 0
-run()
-print("")
+all_vel, all_pos, C_int, C_avg, C_std = run()
+print('')
 print("C_int = ")
 C_int
-print("")
+print('')
 print("C_avg = ")
 C_avg
-print("")
+print('')
 print("C_std = ")
 C_std
-print("")
+print('')
 print("Posistion Data = ")
-print("")
+all_pos
+print('')
 print("velocity data = ")
+all_vel
 
 
 total_time = time()-start
