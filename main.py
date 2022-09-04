@@ -1,3 +1,4 @@
+from ctypes import c_int
 import numpy as np
 from time import time 
 
@@ -108,11 +109,11 @@ class Boid():
         return steering
 
 #////////////////////CONTROL PARAMETERS///////////////////////////////////
-width = 1500
-height = 1500
-boid_n = 500 #number of boids
-snapshot = 250 #how many snapshots do we use to calculate the interaction parameters
-time_steps = 2000
+width = 2500
+height = 2500
+boid_n = 1000 #number of boids
+snapshot = 200 #how many snapshots do we use to calculate the interaction parameters
+time_steps = 1000
 n_size = 20 #neigbourhood size
 
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
@@ -184,52 +185,37 @@ def run(time = time_steps, n_c = n_size):
         print('time = %d' %t)
         C = np.sum(list_of_sums)/boid_n
         C_int.append(C)
-
-    #-------------------Finding C_int in steady state-----------------#
-    #plotting average correlations over timestep - check we are in steady state.
-    #Obtain the experimental value of C_int
-    #printing experimental value of average correlation
-    #check if simulation was in steady state
-    C_avg = np.average(C_int[(t-snapshot):(t-1)])
-    print('C_avg = %d ' %C_avg)
-    print('n_boids = %d' %boid_n)
-    print('nc  = %d' %n_c )
-    print('time_steps = %d' %time_steps)
-    print('snapshot = %d' %snapshot)
-    print('')
-    print('')
-    print('C_int Results:')
-    print(C_int)
-
-
-#----------JARRYD ANIMATION CODE--------------
-#make this section easy to comment out. 
-
-
-#----------------------------------------------
-
-#--------------JARRYD ANALYSIS CODDE-----------
-#Find J and nc 
-
-#-----------------------------------------------
-
-#----------------NIKKI ANALYSIS CODE-----------
-#Find relationship between J and nc 
-#Confirm the max entropy model agrees with simulation by plotting
-#the correlation function from the max entropy model vs the one from simulation
-
-#correlation as a function of ditance 
-#perpendicular component
-#longitudinal component
-#average is performed over all pairs seperated by distance r
-#corealation as a function of distance
-
-
-
+    C_avg = np.average(C_int[time_steps - snapshot: time_steps-1])
+    C_std = np.std(C_int)
 
 
 #-----------------------------------------------
 #run the simulaiton and post processing code
+print('Simulation Info:')
+print('n_boids= %d' %boid_n)
+print('nc = %d' %n_size)
+print('time_steps = %d' %time_steps)
+print('snapshot = %d' %snapshot)
+C_int = []
+C_avg = 0
+C_std = 0
 run()
+print("")
+print("C_int = ")
+C_int
+print("")
+print("C_avg = ")
+C_avg
+print("")
+print("C_std = ")
+C_std
+print("")
+print("Posistion Data = ")
+print("")
+print("velocity data = ")
+
+
 total_time = time()-start
 print('Time taken to run: %d s' %total_time)
+
+
