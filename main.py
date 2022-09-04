@@ -108,12 +108,12 @@ class Boid():
         return steering
 
 #////////////////////CONTROL PARAMETERS///////////////////////////////////
-width = 2500
-height = 2500
-boid_n = 10 #number of boids
-snapshot = 10 #how many snapshots do we use to calculate the interaction parameters
-time_steps = 20
-n_size = 5 #neigbourhood size
+width = 3000
+height = 3000
+boid_n = 1000 #number of boids
+snapshot = 100 #how many snapshots do we use to calculate the interaction parameters
+time_steps = 1000
+n_size = 20 #neigbourhood size
 
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
@@ -142,15 +142,24 @@ def update():
     global flock
     norm_vel = []
     pos = []
+    posx = []
+    posy = []
+    velx = []
+    vely = []
     for boid in flock:
         boid.edges()
         boid.apply_behaviour(flock)
         boid.update()
-        norm_vel.append(boid.velocity/np.linalg.norm(boid.velocity))
+        norm_v = boid.velocity/np.linalg.norm(boid.velocity)
+        norm_vel.append(norm_v)
         pos.append(boid.position)
+        posx.append(boid.position[0])
+        posy.append(boid.position[1])
+        velx.append(norm_v[0])
+        vely.append(norm_v[1])
 
-    #Return the velocities for each time step   
-    return norm_vel, pos
+    #Return the velocities for each time step  
+    return norm_vel, pos, posx, posy, velx, vely
 
 
 #////////////////////RUN SIMULATION////////////////////////
@@ -159,18 +168,23 @@ def run(time = time_steps, n_c = n_size):
     #function to run simulation code
     #time = how many timesteps do we want to simulate for
     C_int = []
-    all_vel = []
-    all_pos = []
+    allposx = []
+    allposy = []
+    allvelx = []
+    allvely = []
 
     for t in range(time): 
         if n_c > boid_n:
             print("ERROR: nc >n_boids")
             break 
         #updates velocity for every time step then calculates int
-        norm_v, pos = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
+        norm_v, pos, posx, posy, velx, vely = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
+
         if t > (time_steps - snapshot): #obtain position and velocity data for final snapshots
-            all_vel.append(norm_v)
-            all_pos.append(pos)
+            allposx.append(posx)
+            allposy.append(posy)
+            allvelx.append(velx)
+            allvely.append(vely)
         #calculating C_int by considering only local neigbourhood. 
         list_of_sums = []
         for i in range(boid_n):
@@ -191,7 +205,7 @@ def run(time = time_steps, n_c = n_size):
     C_avg = np.average(C_int[time_steps - snapshot: time_steps-1])
     C_std = np.std(C_int)
 
-    return all_vel, all_pos, C_int, C_avg, C_std
+    return allposx, allposy, allvelx, allvely , C_int, C_avg, C_std
 
 
 #-----------------------------------------------
@@ -201,18 +215,28 @@ print('n_boids= %d' %boid_n)
 print('nc = %d' %n_size)
 print('time_steps = %d' %time_steps)
 print('snapshot = %d' %snapshot)
-all_vel, all_pos, C_int, C_avg, C_std = run()
+posx, posy, velx, vely, C_int, C_avg, C_std = run()
 print('')
-print("C_int = %f" %C_int)
+print("C_int = ")
+for c in C_int:
+    print(c)
 print('')
 print("C_avg = %f " %C_avg)
 print('')
 print("C_std = %f " %C_std)
 print('')
-print("Posistion Data = %f " %all_pos)
+print("Posistion Data x  = ")
+print(posx)
 print('')
-print("velocity data = %f ", all_vel)
-
+print("Posistion Data y  = ")
+print(posy)
+print('')
+print("velocity data x =  ")
+step = snapshot
+print(velx)
+print('')
+print("velocity data y =  ")
+print(vely)
 
 total_time = time()-start
 print('Time taken to run: %d s' %total_time)
