@@ -111,9 +111,9 @@ class Boid():
 width = 2000
 height = 2000
 boid_n = 526 #number of boids
-snapshot = 50 #how many snapshots do we use to calculate the interaction parameters
+snapshot = 10 #how many snapshots do we use to calculate the interaction parameters
 time_steps = 1000
-n_size =  list(range(1,5))
+n_size =  list(range(5,35))
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
 
@@ -208,7 +208,8 @@ def run(time = time_steps, n_c = n_size):
                 C_matrix[n-1, time_steps - t] =c
 
         #calculating C_int by considering only local neigbourhood. 
-        C = calc_c(norm_v, pos, 20) #obtaining C int for n = 20 to see if we are in steady state
+        C = 0
+        #calc_c(norm_v, pos, 20) #obtaining C int for n = 20 to see if we are in steady state
         C_int.append(C)
     C_avg = np.average(C_int[time_steps - snapshot: time_steps-1])
     C_std = np.std(C_int)
