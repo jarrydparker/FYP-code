@@ -24,7 +24,6 @@ class Boid():
         self.height = height
 
 
-
     def update(self):
         self.position += self.velocity
         self.velocity += self.acceleration
@@ -108,18 +107,18 @@ class Boid():
         return steering
 
 #////////////////////CONTROL PARAMETERS///////////////////////////////////
-width = 2000
-height = 2000
-boid_n = 526 #number of boids
+width = 1000
+height = 1000
+boid_n = 200 #number of boids
 snapshot = 10 #how many snapshots do we use to calculate the interaction parameters
 time_steps = 1000
-n_size =  list(range(5,35))
+n_size =  list(range(0,50))
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
 
 #////////////////////GENERAL FUNCTIONS//////////////////////////////////////////
 def distance(p1, p2):
-   return (p1[0]-p2[0])**2 + (p1[1]-p2[1])**2
+   return np.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 
 def find_nearest(pos, pos_list , n): 
     #function that returns the nearest n closest positions to a given vector. 
@@ -163,15 +162,17 @@ def update():
 def calc_c(norm_v, pos, n): 
     #pos is list of positions
     list_of_sums = []
+    idx_list = []
     for i in range(boid_n):
-    #find n_c closest boids
-        idx_list = find_nearest(pos[i],pos,n)
+    #find n_c boids within some distance
+        #idx_list = find_nearest(pos[i],pos,n)
         list_of_products = []
-        for j in idx_list:
-            a = norm_v[i]
-            b = norm_v[j]
-            product = np.inner(a, b)
-            list_of_products.append(product)
+        for j in range(boid_n):
+            if distance(pos[i], pos[j])<n: 
+                a = norm_v[i]
+                b = norm_v[j]
+                product = np.inner(a, b)
+                list_of_products.append(product)
         product_sum = np.sum(list_of_products)/n
         list_of_sums.append(product_sum)
     C = np.sum(list_of_sums)/boid_n
