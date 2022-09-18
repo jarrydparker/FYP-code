@@ -112,7 +112,7 @@ height = 1000
 boid_n = 200 #number of boids
 snapshot = 10 #how many snapshots do we use to calculate the interaction parameters
 time_steps = 1000
-n_size =  [20,30,40,50,60,70,80,90,100,110,120,130,140,150,160] #this is now interaction range, not neighbours.
+n_size =  list(range(0,50))
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
 
@@ -168,13 +168,12 @@ def calc_c(norm_v, pos, n):
         #idx_list = find_nearest(pos[i],pos,n)
         list_of_products = []
         for j in range(boid_n):
-            boid_count = 0 #how many boids within the radius
             if distance(pos[i], pos[j])<n: 
                 a = norm_v[i]
                 b = norm_v[j]
                 product = np.inner(a, b)
                 list_of_products.append(product)
-        product_sum = np.sum(list_of_products)/boid_count
+        product_sum = np.sum(list_of_products)/n
         list_of_sums.append(product_sum)
     C = np.sum(list_of_sums)/boid_n
     return C
@@ -191,7 +190,7 @@ def run(time = time_steps, n_c = n_size):
     allposy = []
     allvelx = []
     allvely = []
-    C_matrix = np.zeros((n_size[-1], snapshot)) #stores corelations from different interaction ranges over snapshots
+    C_matrix = np.zeros((n_size[-1], snapshot))
     for t in range(time): 
         print('time = %d' %t)
 
@@ -207,10 +206,10 @@ def run(time = time_steps, n_c = n_size):
 
             for n in n_size:
                 c = calc_c(norm_v, pos, n)
-                C_matrix[n-1, time_steps - t] = c
+                C_matrix[n-1, time_steps - t] =c
 
         #calculating C_int by considering only local neigbourhood. 
-        C = calc_c(norm_v, pos, 100)
+        C = 0
         #calc_c(norm_v, pos, 20) #obtaining C int for n = 20 to see if we are in steady state
         C_int.append(C)
     C_avg = np.average(C_int[time_steps - snapshot: time_steps-1])
