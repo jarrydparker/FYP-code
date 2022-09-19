@@ -4,6 +4,7 @@ from time import time
 #Bialek paper used 1246 boids
 #try nc  = 20 birds
 #bialek et all calculated of 25 snapshots
+#self.perception = 25
 
 start = time()
 class Boid():
@@ -18,7 +19,7 @@ class Boid():
         self.acceleration = vec
         self.max_force = 0.3
         self.max_speed = 5
-        self.perception = 100
+        self.perception = 25
 
         self.width = width
         self.height = height
@@ -51,12 +52,31 @@ class Boid():
         elif self.position[1] < 0:
             self.position[1] = self.height
 
-    def align(self, boids):
+    def find_near(self, boids , position, perception): 
+    #function that returns the nearest n closest positions to a given vector. 
+        idx_list = []
+        dist = []
+        for boid in boids:
+            dist.append(np.linalg.norm(boid.position - position))
+        
+        dist = np.array(dist)
+        for i in range(perception+1):
+            idx = dist.argmin()
+            dist[idx]= 99999999
+            idx_list.append(idx)
+            
+        del idx_list[0]
+        return idx_list
+
+    def align(self, boids): #aligns boid velocity vector with n closest boids
         steering = np.zeros(2)
         total = 0
-        avg_vector = np.zeros(2)
+        avg_vector = np.zeros(2) 
+        idx_list =  self.find_near(boids, self.position, self.perception,)
+        index = 0
         for boid in boids:
-            if np.linalg.norm(boid.position - self.position) < self.perception:
+            index = index + 1
+            if index in idx_list:
                 avg_vector += boid.velocity
                 total += 1
         if total > 0:
@@ -107,18 +127,19 @@ class Boid():
         return steering
 
 #////////////////////CONTROL PARAMETERS///////////////////////////////////
-width = 1000
-height = 1000
-boid_n = 200 #number of boids
-snapshot = 10 #how many snapshots do we use to calculate the interaction parameters
+width = 2000
+height = 2000
+boid_n = 500 #number of boids
+snapshot = 20 #how many snapshots do we use to calculate the interaction parameters
 time_steps = 1000
-n_size =  list(range(0,50))
+n_size =  list(range(1,40))
+n_init = 20 #Initial measured C_int
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
 flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
 
 #////////////////////GENERAL FUNCTIONS//////////////////////////////////////////
 def distance(p1, p2):
-   return np.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
+   return (p1[0]-p2[0])**2 + (p1[1]-p2[1])**2
 
 def find_nearest(pos, pos_list , n): 
     #function that returns the nearest n closest positions to a given vector. 
@@ -162,17 +183,15 @@ def update():
 def calc_c(norm_v, pos, n): 
     #pos is list of positions
     list_of_sums = []
-    idx_list = []
     for i in range(boid_n):
-    #find n_c boids within some distance
-        #idx_list = find_nearest(pos[i],pos,n)
+    #find n_c closest boids
+        idx_list = find_nearest(pos[i],pos,n)
         list_of_products = []
-        for j in range(boid_n):
-            if distance(pos[i], pos[j])<n: 
-                a = norm_v[i]
-                b = norm_v[j]
-                product = np.inner(a, b)
-                list_of_products.append(product)
+        for j in idx_list:
+            a = norm_v[i]
+            b = norm_v[j]
+            product = np.inner(a, b)
+            list_of_products.append(product)
         product_sum = np.sum(list_of_products)/n
         list_of_sums.append(product_sum)
     C = np.sum(list_of_sums)/boid_n
@@ -182,7 +201,7 @@ def calc_c(norm_v, pos, n):
 
 #////////////////////RUN SIMULATION////////////////////////
 
-def run(time = time_steps, n_c = n_size): 
+def run(time = time_steps, n_c = n_size, n_init = 20): 
     #function to run simulation code
     #time = how many timesteps do we want to simulate for
     C_int = []
@@ -209,7 +228,7 @@ def run(time = time_steps, n_c = n_size):
                 C_matrix[n-1, time_steps - t] =c
 
         #calculating C_int by considering only local neigbourhood. 
-        C = 0
+        C = calc_c(norm_v, pos, n_init)
         #calc_c(norm_v, pos, 20) #obtaining C int for n = 20 to see if we are in steady state
         C_int.append(C)
     C_avg = np.average(C_int[time_steps - snapshot: time_steps-1])
@@ -230,6 +249,7 @@ print('snapshot = %d' %snapshot)
 posx, posy, velx, vely, C_int, C_avg, C_std, C_avg_n, C_std_n, C_matrix = run()
 print('')
 print("C_int = ")
+print("self.perception = 25")
 for c in C_int:
     print(c)
 print('')
@@ -263,5 +283,4 @@ print('')
 
 total_time = time()-start
 print('Time taken to run: %d s' %total_time)
-
 
