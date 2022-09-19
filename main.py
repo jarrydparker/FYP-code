@@ -8,7 +8,7 @@ from time import time
 
 start = time()
 class Boid():
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, perception = 25):
         self.x = x
         self.y = y
         self.position = np.array([self.x , self.y])
@@ -19,7 +19,7 @@ class Boid():
         self.acceleration = vec
         self.max_force = 0.3
         self.max_speed = 5
-        self.perception = 25
+        self.perception = perception
 
         self.width = width
         self.height = height
@@ -134,9 +134,11 @@ snapshot = 20 #how many snapshots do we use to calculate the interaction paramet
 time_steps = 1000
 n_size =  list(range(1,40))
 n_init = 20 #Initial measured C_int
+real_n = 5
+print("real_n = ")
+print(real_n)
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
-flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height) for _ in range(boid_n)]
-
+flock = [Boid(np.random.rand()*1000, np.random.rand()*1000, width, height, perception= real_n) for _ in range(boid_n)]
 #////////////////////GENERAL FUNCTIONS//////////////////////////////////////////
 def distance(p1, p2):
    return (p1[0]-p2[0])**2 + (p1[1]-p2[1])**2
@@ -204,6 +206,7 @@ def calc_c(norm_v, pos, n):
 def run(time = time_steps, n_c = n_size, n_init = 20): 
     #function to run simulation code
     #time = how many timesteps do we want to simulate for
+
     C_int = []
     allposx = []
     allposy = []
@@ -249,7 +252,6 @@ print('snapshot = %d' %snapshot)
 posx, posy, velx, vely, C_int, C_avg, C_std, C_avg_n, C_std_n, C_matrix = run()
 print('')
 print("C_int = ")
-print("self.perception = 25")
 for c in C_int:
     print(c)
 print('')
