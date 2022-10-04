@@ -1,10 +1,7 @@
 import numpy as np
 from time import time 
 
-#Bialek paper used 1246 boids
-#try nc  = 20 birds
-#bialek et all calculated of 25 snapshots
-#self.perception = 25
+
 
 start = time()
 class Boid():
@@ -134,7 +131,7 @@ snapshot = 20 #how many snapshots do we use to calculate the interaction paramet
 time_steps = 1000
 n_size =  list(range(1,40))
 n_init = 20 #Initial measured C_int
-real_n = 5
+real_n = 10
 print("real_n = ")
 print(real_n)
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
