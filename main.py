@@ -131,7 +131,7 @@ snapshot = 20 #how many snapshots do we use to calculate the interaction paramet
 time_steps = 1000
 n_size =  list(range(1,40))
 n_init = 20 #Initial measured C_int
-real_n = 10
+real_n = 15
 print("real_n = ")
 print(real_n)
 #////////////////////INSTANTIATE CLASSES////////////////////////////////////////
