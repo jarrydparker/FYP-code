@@ -215,7 +215,7 @@ def run(time = time_steps, n_c = n_size, n_init = 20):
 
         #updates velocity for every time step then calculates int
         norm_v, pos, posx, posy, velx, vely = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
-        if t = 0:
+        if t == 0:
             x_init = posx
             y_init = posy
             
