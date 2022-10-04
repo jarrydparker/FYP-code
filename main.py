@@ -215,7 +215,10 @@ def run(time = time_steps, n_c = n_size, n_init = 20):
 
         #updates velocity for every time step then calculates int
         norm_v, pos, posx, posy, velx, vely = update() #applies flocking behaviour and updates velocites and positions for "time" steps. 
-
+        if t = 0:
+            x_init = posx
+            y_init = posy
+            
         if t > (time_steps - snapshot): #obtain position and velocity data for final snapshots
             allposx.append(posx)
             allposy.append(posy)
@@ -236,7 +239,7 @@ def run(time = time_steps, n_c = n_size, n_init = 20):
     C_avg_n = np.average(C_matrix, axis=1)
     C_std_n = np.std(C_matrix, axis = 1)
 
-    return allposx, allposy, allvelx, allvely , C_int, C_avg, C_std, C_avg_n, C_std_n, C_matrix
+    return x_init, y_init, allposx, allposy, allvelx, allvely , C_int, C_avg, C_std, C_avg_n, C_std_n, C_matrix
 
 
 #-----------------------------------------------
@@ -246,7 +249,7 @@ print('n_boids= %d' %boid_n)
 #print('nc = %d' %n_size)
 print('time_steps = %d' %time_steps)
 print('snapshot = %d' %snapshot)
-posx, posy, velx, vely, C_int, C_avg, C_std, C_avg_n, C_std_n, C_matrix = run()
+x_init, y_init, posx, posy, velx, vely, C_int, C_avg, C_std, C_avg_n, C_std_n, C_matrix = run()
 print('')
 print("C_int = ")
 for c in C_int:
@@ -255,6 +258,12 @@ print('')
 print("C_avg = %f " %C_avg)
 print('')
 print("C_std = %f " %C_std)
+print('')
+print("x_init")
+print(x_init)
+print('')
+print("y_init")
+print(y_init)
 print('')
 print("Posistion Data x  = ")
 print(posx)
